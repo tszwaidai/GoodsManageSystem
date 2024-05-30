@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '社团公共物品借用管理系统',
 
   /**
    * @type {boolean} true | false
