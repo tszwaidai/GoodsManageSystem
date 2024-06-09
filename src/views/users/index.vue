@@ -84,14 +84,32 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             /> -->
-            <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage3"
-            :page-size="100"
-            layout="prev, pager, next, jumper"
-            :total="1000">
-            </el-pagination>
+           
+
+            <!--弹出框-->
+            <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" width="30%">
+            <!--普通表单-->
+            <el-form ref="ruleForm" :model="form" :rules="rules" label-width="80px">
+
+                <el-form-item label="用户名称" prop="username">
+                <el-input v-model="form.username" />
+                </el-form-item>
+
+                <el-form-item label="用户密码" prop="userpassword">
+                <el-input v-model="form.userpassword" />
+                </el-form-item>
+
+                <el-form-item label="身份" prop="isadmin">
+                <el-radio v-model="form.isadmin" :label="1">管理员</el-radio>
+                <el-radio v-model="form.isadmin" :label="0">读者</el-radio>
+                </el-form-item>
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+            </div>
+            </el-dialog>
 
     </div>
 </template>

@@ -17,6 +17,7 @@ const mutations = {
     Object.assign(state, getDefaultState())
   },
   SET_TOKEN: (state, token) => {
+    console.log(token, 'token22222222222222222222')
     state.token = token
   },
   SET_NAME: (state, name) => {
@@ -45,6 +46,7 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
+    // console.log(commit, state, 'ssssssssssssssss')
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response

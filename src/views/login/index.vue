@@ -6,32 +6,32 @@
         <h3 class="title">社团公共物品借用管理系统</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="userName"
+          v-model="loginForm.userName"
+          placeholder="用户名"
+          name="userName"
           type="text"
           tabindex="1"
           auto-complete="on"
         />
       </el-form-item>
 
-      <el-form-item prop="password">
+      <el-form-item prop="userPassword">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
         <el-input
           :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
+          ref="userPassword"
+          v-model="loginForm.userPassword"
           :type="passwordType"
-          placeholder="Password"
-          name="password"
+          placeholder="密码"
+          name="userPassword"
           tabindex="2"
           auto-complete="on"
           @keyup.enter.native="handleLogin"
@@ -41,12 +41,10 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登 录</el-button>
-
-      <!-- <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div> -->
+      <div style="height: 40px; margin-bottom: 30px;">
+        <el-button :loading="loading" type="primary" style="width: 48%; float: left;" @click.native.prevent="handleLogin">登录</el-button>
+        <el-button :loading="loading" type="success" style="width: 48%; float: right;" @click.native.prevent="handleRegister">注册</el-button>
+      </div>
 
     </el-form>
   </div>
@@ -54,72 +52,78 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { login, getInfo } from '@/api/user' // 引入login API
+import { setToken } from '@/utils/auth' // get token from cookie
+import store from '../../store'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请输入正确的用户名'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (!value) {
+        callback(new Error('请输入密码'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        userName: '',
+        userPassword: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userPassword: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
-    }
-  },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true
+      redirect: undefined,
+      token:''
     }
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
+      this.passwordType = this.passwordType === 'password' ? '' : 'password';
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.userPassword.focus();
+      });
     },
+    
     handleLogin() {
+      console.log('login')
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
+          this.loading = true;
+          login(this.loginForm).then(response => {
+            this.token = response.data; // Ensure this is how the token is retrieved
+            setToken(this.token)
+            return getInfo(this.token)
+          }).then(userInfo =>  {
+            console.log('User info:', userInfo);
+            // userInfo.token = this.token
+            store.commit('user/SET_TOKEN',this.token)
+            this.$router.push({ path: this.redirect || '/' });
+            this.loading = false;
+          }).catch(error => {
+            console.error('Error:', error);
+            this.loading = false;
+          });
         } else {
-          console.log('error submit!!')
-          return false
+          console.log('Form validation failed');
+          return false;
         }
-      })
+      });
+    },
+  
+    handleRegister() {
+      this.$router.push({ path: '/register' }) // 进注册页面
     }
   }
 }
@@ -182,6 +186,11 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
+
+  background-image: url();
+  background-size: 100%;
+
+  display: flex;
 
   .login-form {
     position: relative;
