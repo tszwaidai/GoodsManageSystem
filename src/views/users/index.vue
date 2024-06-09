@@ -115,36 +115,36 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-            input: '',
-            tableData: [{
-                userid: '1',
-                username: '王小虎',
-                userpassword: '12345',
-                usertele: '888',
-                userclub: 'xx社团'
-            }, 
-            {
-                userid: '1',
-                username: '王小虎',
-                userpassword: '12345',
-                usertele: '888',
-                userclub: 'xx社团'
-            },
-            {
-                userid: '1',
-                username: '王小虎',
-                userpassword: '12345',
-                usertele: '888',
-                userclub: 'xx社团'
-            }],
-            multipleSelection: []
-            }     
-        } 
+    // export default {
+    //     data() {
+    //         return {
+    //         input: '',
+    //         tableData: [{
+    //             userid: '1',
+    //             username: '王小虎',
+    //             userpassword: '12345',
+    //             usertele: '888',
+    //             userclub: 'xx社团'
+    //         }, 
+    //         {
+    //             userid: '1',
+    //             username: '王小虎',
+    //             userpassword: '12345',
+    //             usertele: '888',
+    //             userclub: 'xx社团'
+    //         },
+    //         {
+    //             userid: '1',
+    //             username: '王小虎',
+    //             userpassword: '12345',
+    //             usertele: '888',
+    //             userclub: 'xx社团'
+    //         }],
+    //         multipleSelection: []
+    //         }     
+    //     } 
 
-    }
+    // }
 </script>
 
 <style lang="scss" scoped>
