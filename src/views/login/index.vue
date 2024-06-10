@@ -102,12 +102,12 @@ export default {
         if (valid) {
           this.loading = true;
           login(this.loginForm).then(response => {
-            this.token = response.data; // Ensure this is how the token is retrieved
+            this.token = response.msg; // Ensure this is how the token is retrieved
             setToken(this.token)
             return getInfo(this.token)
           }).then(userInfo =>  {
             console.log('User info:', userInfo);
-            // userInfo.token = this.token
+            userInfo.token = this.token
             store.commit('user/SET_TOKEN',this.token)
             this.$router.push({ path: this.redirect || '/' });
             this.loading = false;

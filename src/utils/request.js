@@ -14,6 +14,8 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
+    const token = getToken();
+    console.log('Request token:', token); // 添加日志
 
     if (store.getters.token) {
       // let each request carry token

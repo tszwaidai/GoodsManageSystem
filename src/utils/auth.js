@@ -7,6 +7,7 @@ export function getToken() {
 }
 
 export function setToken(token) {
+  console.log('Setting token:', token); // 添加日志
   return Cookies.set(TokenKey, token)
 }
 
