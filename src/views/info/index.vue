@@ -37,7 +37,7 @@
             <el-tag v-if="scope.row.status === 0" >未申请</el-tag>
             <el-tag v-if="scope.row.status === 1" type="warning">申请中</el-tag>
             <el-tag v-if="scope.row.status === 2" type="success">已通过</el-tag>
-            <el-tag v-if="scope.row.status === 3" type="danger">未通过</el-tag>
+            <el-tag v-if="scope.row.status === 3" type="danger" title="请联系管理员后再次申请">未通过</el-tag>
             <el-tag v-if="scope.row.status === 4" type="info">使用中</el-tag>
             <!-- 初始状态为“未申请”，操作栏按钮为“申请”，同一个用户点击“申请”后状态变为“申请中”，按钮仍为“申请”，若用户再次点击“申请”弹窗提示“请勿重复申请！”，管理员通过申请后，状态变为“已通过”，按钮变为“领用”
              用户点击“领用”后，状态变为“使用中”，按钮变为“申请”，若用户点击“申请”弹窗提示“请归还后申请！”，在物品借用管理页面，用户点击“归还”，此页面已经在“使用中”的物品状态变为“未申请”，按钮再次变为“申请”且可用
@@ -235,17 +235,17 @@ import typeApi from '@/api/goodsType'
         },
         //初次申请
         apply(goodsInfo) {
-        if (goodsInfo.status === 0) {
-          goodsInfo.status = 1; // 申请中
-          this.updateStatus(goodsInfo);
-        } else if (goodsInfo.status === 4) {
-          this.$message.warning("请归还后申请！");
-        } else if (goodsInfo.status === 2){
-          this.$message.warning("请勿重复申请！");
-        } else {
-          goodsInfo.status = 1; // 申请中
-          this.updateStatus(goodsInfo);
-        }
+          if (goodsInfo.status === 0) {
+            goodsInfo.status = 1; // 申请中
+            this.updateStatus(goodsInfo);
+          } else if (goodsInfo.status === 4) {
+            this.$message.warning("请归还后申请！");
+          } else if (goodsInfo.status === 2){
+            this.$message.warning("请勿重复申请！");
+          } else {
+            goodsInfo.status = 1; // 申请中
+            this.updateStatus(goodsInfo);
+          }
       },
       approve(goodsInfo) {
         if (goodsInfo.status === 2) {
