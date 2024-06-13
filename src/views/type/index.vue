@@ -8,7 +8,7 @@
         <el-button style="margin-left: 10px;" type="success" icon="el-icon-edit" @click="openEditUI(null)">
           添加分类
         </el-button>
-      </div>
+    </div>
 
       <el-table
         :data="tableData"
@@ -116,7 +116,7 @@ import typeApi  from '@/api/goodsType'
             typeApi.deleteTypeById(goodsType.goodsTypeId).then(response => {
               this.$message({
                 type: 'success',
-                message: response.msg
+                message: '类型删除成功'
               });
               this.getTypeList();
             })

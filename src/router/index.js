@@ -88,7 +88,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Borrow',
         component: () => import('@/views/borrow/index'),
-        meta: { title: '物品借用记录', icon: 'form' }
+        meta: { title: '物品借用管理', icon: 'form' }
       }
     ]
   },
