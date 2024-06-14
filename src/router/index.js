@@ -117,6 +117,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/center',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Center',
+        component: () => import('@/views/center/index'),
+        meta: { title: '个人中心', icon: 'nested' }
+      }
+    ]
+  },
 
 
 

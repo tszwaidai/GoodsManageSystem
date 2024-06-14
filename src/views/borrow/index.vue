@@ -19,13 +19,15 @@
         style="width: 100%; margin-top: 30px;"
         border
       >
-        <el-table-column prop="borrowId" label="借用记录ID"  />
+
         <el-table-column prop="userName" label="申请人"  />
         <el-table-column prop="goodsName" label="申请物品"  />
         <el-table-column prop="borrowTime" label="借用时间"  />
         <el-table-column prop="returnTime" label="归还时间"  />
-        <el-table-column fixed="right" label="操作" width="300">
+        <el-table-column fixed="right" label="操作" width="450">
           <template slot-scope="scope">
+            <el-button type="warning" size="small" >通过</el-button>
+            <el-button type="danger" size="small" >不通过</el-button>
             <el-button type="warning" size="small" >归还</el-button>
             <el-button type="success" size="small" >丢失</el-button>
             <el-button type="primary" size="small" @click="openEditUI(scope.row.borrowId)">编辑</el-button>
@@ -68,7 +70,11 @@
               :label="type.goodsName"
               :value="type.goodsId"
              />
-          </el-select>
+          </el-select>          
+        </el-form-item>
+
+        <el-form-item label="借用时间" prop="borrowTime">
+          <el-date-picker v-model="borrowForm.borrowTime" type="datetime" placeholder="请选择借用时间" />
         </el-form-item>
       </el-form>
 
@@ -98,9 +104,11 @@ import userApi from '@/api/userManage'
           pageNo: 1, // 当前页码
           pageSize: 10, // 每页显示数量
           goodsname: '', // 物品名称
-          username: '', // 物品类型
+          username: '', // 用户名
         },
         tableData: [],
+        users: [],
+        goodsInfo: [],
         rules: {
           userId :{ required: true, message: '请选择申请人', trigger: 'blur' },
           goodsId :{ required: true, message: '请选择申请物品', trigger: 'blur' },
@@ -108,6 +116,24 @@ import userApi from '@/api/userManage'
       }
     },
     methods: {
+      saveBorrow() {
+        //触发表单验证
+        this.$refs.borrowFormRef.validate((valid) => {
+        if (valid) {
+          borrowApi.saveBorrow(this.borrowForm).then(response => {
+            this.$message({
+              message: response.msg,
+              type: 'success'
+            });
+            this.dialogFormVisible = false;
+            this.getBorrowList();
+          });
+        } else {
+            console.log("提交错误!");
+            return false;
+          }
+        });
+      },
       //删除
       deleteBorrow(borrow){
         this.$confirm(`您确认删除这条记录？`, '提示', {

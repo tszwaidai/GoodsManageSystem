@@ -51,5 +51,15 @@ export default {
             method: 'post',
             data: goodsInfo
         });
+    },
+    apply(goodsId, userId) {
+        return request({
+            url: '/goodsInfo/apply',
+            method: 'post',
+            data: {
+                goodsId: goodsId,
+                userId: userId
+            }
+        });
     }
 }

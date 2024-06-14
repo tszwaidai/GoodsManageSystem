@@ -5,6 +5,7 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
+    userId: null,
     name: '',
     avatar: ''
   }
@@ -25,7 +26,10 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-  }
+  },
+  SET_USER_ID: (state, userId) => {  // 添加 SET_USER_ID
+    state.userId = userId
+  },
 }
 
 const actions = {
@@ -36,6 +40,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        commit('SET_USER_ID', data.userId)  // 在登录成功时设置 userId
         setToken(data.token)
         resolve()
       }).catch(error => {

@@ -116,6 +116,7 @@
 <script>
 import infoApi from '@/api/goodsInfo'
 import typeApi from '@/api/goodsType'
+import { mapGetters } from 'vuex';
 
   export default {
     data(){
@@ -141,6 +142,9 @@ import typeApi from '@/api/goodsType'
           
         }
       }
+    },
+    computed: {
+      ...mapGetters(['userId'])
     },
     methods: {
       
@@ -234,18 +238,12 @@ import typeApi from '@/api/goodsType'
           this.$refs.infoFormRef.clearValidate();
         },
         //初次申请
-        apply(goodsInfo) {
-          if (goodsInfo.status === 0) {
-            goodsInfo.status = 1; // 申请中
-            this.updateStatus(goodsInfo);
-          } else if (goodsInfo.status === 4) {
-            this.$message.warning("请归还后申请！");
-          } else if (goodsInfo.status === 2){
-            this.$message.warning("请勿重复申请！");
-          } else {
-            goodsInfo.status = 1; // 申请中
-            this.updateStatus(goodsInfo);
-          }
+        apply(row) {
+          infoApi.apply(row.goodsId,this.userId).then(response => {
+            this.$message.success('申请物品成功');
+            this.getInfoList();
+          });
+        
       },
       approve(goodsInfo) {
         if (goodsInfo.status === 2) {
@@ -260,15 +258,15 @@ import typeApi from '@/api/goodsType'
         this.$message.warning("请归还后申请！");
       },
       // 状态更新
-      updateStatus(goodsInfo) {
-        infoApi.updateStatus(goodsInfo).then(response => {
-          this.$message({
-            message: response.msg,
-            type: 'success'
-          });
-          this.getInfoList();
-        });
-      },
+      // updateStatus(goodsInfo) {
+      //   infoApi.updateStatus(goodsInfo).then(response => {
+      //     this.$message({
+      //       message: response.msg,
+      //       type: 'success'
+      //     });
+      //     this.getInfoList();
+      //   });
+      // },
 
     },
     created(){
