@@ -13,6 +13,12 @@ export default {
             }
         });
     },
+    solveLost(id) {
+        return request({
+            url: `/lost/solve/${id}`,
+            method: 'put',
+        })
+    }
 
 
 }

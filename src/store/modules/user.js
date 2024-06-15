@@ -40,7 +40,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
-        commit('SET_USER_ID', data.userId)  // 在登录成功时设置 userId
+        // commit('SET_USER_ID', data.userId)  // 在登录成功时设置 userId
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -60,10 +60,11 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
+        const { name, avatar, userId } = data
 
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_AVATAR', avatar);
+        commit('SET_USER_ID', userId);
         resolve(data)
       }).catch(error => {
         reject(error)

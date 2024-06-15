@@ -24,12 +24,21 @@
         <el-table-column prop="goodsName" label="申请物品"  />
         <el-table-column prop="borrowTime" label="借用时间"  />
         <el-table-column prop="returnTime" label="归还时间"  />
+        <el-table-column label="状态" >
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status === 0" >申请中/丢失已解决</el-tag>
+            <el-tag v-if="scope.row.status === 1" type="warning">已通过</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="success">未通过</el-tag>
+            <el-tag v-if="scope.row.status === 3" type="danger" >已归还</el-tag>
+            <el-tag v-if="scope.row.status === 4" type="info">已丢失</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" width="450">
           <template slot-scope="scope">
-            <el-button type="warning" size="small" >通过</el-button>
-            <el-button type="danger" size="small" >不通过</el-button>
-            <el-button type="warning" size="small" >归还</el-button>
-            <el-button type="success" size="small" >丢失</el-button>
+            <el-button type="warning" size="small" @click="approve(scope.row)">通过</el-button>
+            <el-button type="danger" size="small"  @click="reject(scope.row)">不通过</el-button>
+            <el-button type="warning" size="small" @click="returnGoods(scope.row)">归还</el-button>
+            <el-button type="success" size="small" @click="lost(scope.row)">丢失</el-button>
             <el-button type="primary" size="small" @click="openEditUI(scope.row.borrowId)">编辑</el-button>
             <el-button type="danger" size="small" @click="deleteBorrow(scope.row)">删除</el-button>
           </template>
@@ -91,7 +100,7 @@
 import borrowApi from '@/api/borrow'
 import infoApi from '@/api/goodsInfo'
 import userApi from '@/api/userManage'
-
+import { getInfo } from '@/api/user';
 
   export default {
     data(){
@@ -116,6 +125,56 @@ import userApi from '@/api/userManage'
       }
     },
     methods: {
+      reject(borrow) {
+        borrowApi.rejectBorrow(borrow.borrowId).then(res => {
+          this.$message.success('物品申请不通过');
+          // this.getInfoList();
+        }).catch(error => {
+          this.$message.error('操作失败');
+          console.error(error);
+        });
+      },
+      getInfoList(){
+          infoApi.getInfoList(this.searchModel).then(res => {
+            this.tableData = res.data
+            this.total = res.total
+          })
+        },
+      approve(borrow) {
+        borrowApi.approveBorrow(borrow.borrowId).then(res => {
+          this.$message.success('物品申请已通过');
+          // this.getInfoList();
+        }).catch(error => {
+          this.$message.error('操作失败');
+          console.error(error);
+        });
+      },
+      returnGoods(borrow) {
+        borrowApi.returnGoods(borrow.borrowId).then(res => {
+          this.$message.success('物品已归还');
+          this.getBorrowList();
+        }).catch(error => {
+          this.$message.error('归还失败');
+          console.error(error);
+        });
+      },
+      lost(row) {
+        // 假设已经在 Vuex 中存储了 token，可以通过 this.$store.state.user.token 访问
+        const token = this.$store.state.user.token;
+        getInfo(token).then(res => {
+            const userId = res.data.userId;
+            borrowApi.lostGoods(row.goodsId, userId).then(response => {
+              this.$message.success('丢失上报成功');
+              // this.getBorrowList();
+            }).catch(error => {
+              this.$message.error('上报失败');
+              console.error(error);
+            });
+          }).catch(error => {
+            this.$message.error('获取用户信息失败');
+            console.error(error);
+          });
+      },
       saveBorrow() {
         //触发表单验证
         this.$refs.borrowFormRef.validate((valid) => {
@@ -213,6 +272,7 @@ import userApi from '@/api/userManage'
 
     },
     created(){
+      // this.getInfoList();
       this.getBorrowList();
       this.getGoods();
       this.getUser();

@@ -45,6 +45,7 @@ export default {
       url: `/user/${id}`,
       method: 'delete',
     })
-  }
+  },
+
 }
 

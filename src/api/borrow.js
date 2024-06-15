@@ -45,7 +45,34 @@ export default {
             method: 'delete',
         })
     },
-
+    approveBorrow(id) {
+        return request({
+            url: `/borrow/approve/${id}`,
+            method: 'put',
+        })
+    },
+    rejectBorrow(id) {
+        return request({
+            url: `/borrow/reject/${id}`,
+            method: 'put',
+        })
+    },
+    returnGoods(id) {
+        return request({
+            url: `/borrow/return/${id}`,
+            method: 'put',
+        })
+    },
+    lostGoods(goodsId, userId) {
+        return request({
+            url: '/borrow/lost',
+            method: 'post',
+            data: {
+                goodsId: goodsId,
+                userId: userId
+            }
+        });
+    }
 
 
 }

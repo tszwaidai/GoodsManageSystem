@@ -61,5 +61,16 @@ export default {
                 userId: userId
             }
         });
-    }
+    },
+    complete(goodsId, userId) {
+        return request({
+            url: '/goodsInfo/completeBorrow',
+            method: 'post',
+            data: {
+                goodsId: goodsId,
+                userId: userId
+            }
+        });
+    },
+
 }

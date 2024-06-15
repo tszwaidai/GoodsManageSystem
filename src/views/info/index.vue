@@ -48,7 +48,7 @@
           <template slot-scope="scope">
             <el-button v-if="scope.row.status === 0" type="success" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button v-if="scope.row.status === 1" type="success" size="small" @click="repeatApplyWarning">申请</el-button>
-            <el-button v-if="scope.row.status === 2" type="primary" size="small" @click="approve(scope.row)">领用</el-button>
+            <el-button v-if="scope.row.status === 2" type="primary" size="small" @click="complete(scope.row)">领用</el-button>
             <el-button v-if="scope.row.status === 3" type="success" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button v-if="scope.row.status === 4" type="warning" size="small" @click="applyReturnWarning">申请</el-button>
             <el-button type="primary" size="small" @click="openEditUI(scope.row.goodsId)">编辑</el-button>
@@ -117,6 +117,7 @@
 import infoApi from '@/api/goodsInfo'
 import typeApi from '@/api/goodsType'
 import { mapGetters } from 'vuex';
+import { getInfo } from '@/api/user'
 
   export default {
     data(){
@@ -239,17 +240,39 @@ import { mapGetters } from 'vuex';
         },
         //初次申请
         apply(row) {
-          infoApi.apply(row.goodsId,this.userId).then(response => {
-            this.$message.success('申请物品成功');
-            this.getInfoList();
+          // 假设已经在 Vuex 中存储了 token，可以通过 this.$store.state.user.token 访问
+          const token = this.$store.state.user.token;
+ 
+          getInfo(token).then(res => {
+            const userId = res.data.userId;
+            infoApi.apply(row.goodsId, userId).then(response => {
+              this.$message.success('申请物品成功');
+              this.getInfoList();
+            }).catch(error => {
+              this.$message.error('申请失败');
+              console.error(error);
+            });
+          }).catch(error => {
+            this.$message.error('获取用户信息失败');
+            console.error(error);
           });
-        
       },
-      approve(goodsInfo) {
-        if (goodsInfo.status === 2) {
-          goodsInfo.status = 4; // 使用中
-          this.updateStatus(goodsInfo);
-        }
+      complete(row) {
+        // 假设已经在 Vuex 中存储了 token，可以通过 this.$store.state.user.token 访问
+        const token = this.$store.state.user.token;
+        getInfo(token).then(res => {
+            const userId = res.data.userId;
+            infoApi.complete(row.goodsId, userId).then(response => {
+              this.$message.success('领用物品成功');
+              this.getInfoList();
+            }).catch(error => {
+              this.$message.error('领用失败');
+              console.error(error);
+            });
+          }).catch(error => {
+            this.$message.error('获取用户信息失败');
+            console.error(error);
+          });
       },
       repeatApplyWarning() {
         this.$message.warning("请勿重复申请！");
@@ -257,16 +280,6 @@ import { mapGetters } from 'vuex';
       applyReturnWarning() {
         this.$message.warning("请归还后申请！");
       },
-      // 状态更新
-      // updateStatus(goodsInfo) {
-      //   infoApi.updateStatus(goodsInfo).then(response => {
-      //     this.$message({
-      //       message: response.msg,
-      //       type: 'success'
-      //     });
-      //     this.getInfoList();
-      //   });
-      // },
 
     },
     created(){

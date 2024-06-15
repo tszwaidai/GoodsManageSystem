@@ -59,6 +59,14 @@ import lostApi from '@/api/lost'
             }
         },
         methods: {
+            solve(lost) {
+                lostApi.solveLost(lost.lostId).then(res => {
+                    this.$message.success('物品丢失解决成功');
+                }).catch(error => {
+                    this.$message.error('操作失败');
+                    console.error(error);   
+                });
+            },
             getLostList(){  
                 lostApi.getLostList(this.searchModel).then(res => {
                     this.tableData = res.data;
