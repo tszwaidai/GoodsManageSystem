@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/404'] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
@@ -29,15 +29,25 @@ router.beforeEach(async (to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.name
+      const hasGetUserInfo = store.getters.roles && store.getters.roles.length > 0
       if (hasGetUserInfo) {
         next()
       } else {
         try {
           // get user info
-          await store.dispatch('user/getInfo')
-
-          next()
+          const data = await store.dispatch('user/getInfo')
+          const roles = data.isAdmin === 1 ? ['admin'] : ['student']
+          // 2. 根据角色生成可访问路由图
+          // 获取通过权限验证的路由
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles) //第二步
+          // 3. 更新加载路由
+          router.options.routes = store.getters.permission_routes //第三步
+          // 动态添加可访问路由
+          router.addRoutes(accessRoutes)
+          next({
+            ...to,
+            replace: true
+          })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')

@@ -187,7 +187,7 @@ $light_gray:#eee;
   background-color: $bg;
   overflow: hidden;
 
-  background-image: url();
+  background-image: url('/public/login.jpg');
   background-size: 100%;
 
   display: flex;

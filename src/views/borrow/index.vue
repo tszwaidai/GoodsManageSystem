@@ -35,12 +35,12 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="450">
           <template slot-scope="scope">
-            <el-button type="warning" size="small" @click="approve(scope.row)">通过</el-button>
-            <el-button type="danger" size="small"  @click="reject(scope.row)">不通过</el-button>
+            <el-button type="warning" size="small" @click="approve(scope.row)" v-if="hasRole(['admin'])">通过</el-button>
+            <el-button type="danger" size="small"  @click="reject(scope.row)" v-if="hasRole(['admin'])">不通过</el-button>
             <el-button type="warning" size="small" @click="returnGoods(scope.row)">归还</el-button>
             <el-button type="success" size="small" @click="lost(scope.row)">丢失</el-button>
-            <el-button type="primary" size="small" @click="openEditUI(scope.row.borrowId)">编辑</el-button>
-            <el-button type="danger" size="small" @click="deleteBorrow(scope.row)">删除</el-button>
+            <el-button type="primary" size="small" @click="openEditUI(scope.row.borrowId)" v-if="hasRole(['admin'])">编辑</el-button>
+            <el-button type="danger" size="small" @click="deleteBorrow(scope.row)" v-if="hasRole(['admin'])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -101,7 +101,7 @@ import borrowApi from '@/api/borrow'
 import infoApi from '@/api/goodsInfo'
 import userApi from '@/api/userManage'
 import { getInfo } from '@/api/user';
-
+import { mapGetters } from 'vuex'
   export default {
     data(){
       return {
@@ -124,11 +124,17 @@ import { getInfo } from '@/api/user';
         }
       }
     },
+    computed: {
+    ...mapGetters(['roles'])
+    },
     methods: {
+      hasRole(requiredRoles) {
+        return requiredRoles.some(role => this.roles.includes(role))
+      },
       reject(borrow) {
         borrowApi.rejectBorrow(borrow.borrowId).then(res => {
           this.$message.success('物品申请不通过');
-          // this.getInfoList();
+          this.getBorrowList();
         }).catch(error => {
           this.$message.error('操作失败');
           console.error(error);
@@ -143,7 +149,7 @@ import { getInfo } from '@/api/user';
       approve(borrow) {
         borrowApi.approveBorrow(borrow.borrowId).then(res => {
           this.$message.success('物品申请已通过');
-          // this.getInfoList();
+          this.getBorrowList();
         }).catch(error => {
           this.$message.error('操作失败');
           console.error(error);

@@ -20,8 +20,8 @@
         <el-table-column prop="goodsTypeDesc" label="物品类型描述"  />
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="openEditUI(scope.row.goodsTypeId)">编辑</el-button>
-            <el-button type="danger" size="small" @click="deleteType(scope.row)">删除</el-button>
+            <el-button type="primary" size="small" @click="openEditUI(scope.row.goodsTypeId)" v-if="hasRole(['admin'])">编辑</el-button>
+            <el-button type="danger" size="small" @click="deleteType(scope.row)" v-if="hasRole(['admin'])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -62,6 +62,7 @@
 
 <script>
 import typeApi  from '@/api/goodsType'
+import { mapGetters } from 'vuex';
 
   export default {
     data() {
@@ -81,7 +82,14 @@ import typeApi  from '@/api/goodsType'
         }
       }
     },
+    computed: {
+      
+      ...mapGetters(['roles'])
+    },
     methods: {
+      hasRole(requiredRoles) {
+        return requiredRoles.some(role => this.roles.includes(role))
+      },
       saveType() {
           //触发表单验证
           this.$refs.typeFormRef.validate((valid)=>{

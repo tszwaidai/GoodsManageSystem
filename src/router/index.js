@@ -58,24 +58,31 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
+
+]
+
+//异步挂载的路由
+//动态需要根据权限加载的路由表
+//每个页面给哪些角色放行，在roles数组提前写好即可
+export const asyncRoutes = [
   {
     path: '/manage',
     component: Layout,
     redirect: '/manage/info',
     name: 'Manage',
-    meta: { title: '物品管理', icon: 'el-icon-s-help' },
+    meta: { title: '物品管理', icon: 'el-icon-s-help', roles: ['admin', 'student'] },
     children: [
       {
         path: 'info',
         name: 'Info',
         component: () => import('@/views/info/index'),
-        meta: { title: '物品信息管理', icon: 'table' }
+        meta: { title: '物品信息管理', icon: 'table', roles: ['admin', 'student'] }
       },
       {
         path: 'type',
         name: 'Type',
         component: () => import('@/views/type/index'),
-        meta: { title: '物品分类管理', icon: 'tree' }
+        meta: { title: '物品分类管理', icon: 'tree', roles: ['admin', 'student'] }
       }
     ]
   },
@@ -88,7 +95,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Borrow',
         component: () => import('@/views/borrow/index'),
-        meta: { title: '物品借用管理', icon: 'form' }
+        meta: { title: '物品借用管理', icon: 'form', roles: ['admin', 'student'] }
       }
     ]
   },
@@ -100,7 +107,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Lost',
         component: () => import('@/views/lost/index'),
-        meta: { title: '物品丢失处理', icon: 'link' }
+        meta: { title: '物品丢失处理', icon: 'link', roles: ['admin'] }
       }
     ]
   },
@@ -113,7 +120,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Users',
         component: () => import('@/views/users/index'),
-        meta: { title: '用户管理', icon: 'nested' }
+        meta: { title: '用户管理', icon: 'nested', roles: ['admin'] }
       }
     ]
   },
@@ -125,11 +132,10 @@ export const constantRoutes = [
         path: 'index',
         name: 'Center',
         component: () => import('@/views/center/index'),
-        meta: { title: '个人中心', icon: 'nested' }
+        meta: { title: '个人中心', icon: 'nested', roles: ['admin', 'student'] }
       }
     ]
   },
-
 
 
   // 404 page must be placed at the end !!!

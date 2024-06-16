@@ -47,12 +47,12 @@
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
             <el-button v-if="scope.row.status === 0" type="success" size="small" @click="apply(scope.row)">申请</el-button>
-            <el-button v-if="scope.row.status === 1" type="success" size="small" @click="repeatApplyWarning">申请</el-button>
+            <el-button v-if="scope.row.status === 1" type="success" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button v-if="scope.row.status === 2" type="primary" size="small" @click="complete(scope.row)">领用</el-button>
             <el-button v-if="scope.row.status === 3" type="success" size="small" @click="apply(scope.row)">申请</el-button>
-            <el-button v-if="scope.row.status === 4" type="warning" size="small" @click="applyReturnWarning">申请</el-button>
-            <el-button type="primary" size="small" @click="openEditUI(scope.row.goodsId)">编辑</el-button>
-            <el-button type="danger" size="small" @click="deleteInfo(scope.row)">删除</el-button>
+            <el-button v-if="scope.row.status === 4" type="warning" size="small" @click="apply(scope.row)">申请</el-button>
+            <el-button type="primary" size="small" @click="openEditUI(scope.row.goodsId)" v-if="hasRole(['admin'])">编辑</el-button>
+            <el-button type="danger" size="small" @click="deleteInfo(scope.row)" v-if="hasRole(['admin'])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -145,10 +145,13 @@ import { getInfo } from '@/api/user'
       }
     },
     computed: {
-      ...mapGetters(['userId'])
+      ...mapGetters(['userId']),
+      ...mapGetters(['roles'])
     },
     methods: {
-      
+      hasRole(requiredRoles) {
+        return requiredRoles.some(role => this.roles.includes(role))
+      },
       saveInfo() {
         //触发表单验证
         this.$refs.infoFormRef.validate((valid) => {
