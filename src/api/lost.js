@@ -18,6 +18,12 @@ export default {
             url: `/lost/solve/${id}`,
             method: 'put',
         })
+    },
+    deletelostById(id) {
+        return request({
+            url: `/lost/${id}`,
+            method: 'delete',
+        })
     }
 
 

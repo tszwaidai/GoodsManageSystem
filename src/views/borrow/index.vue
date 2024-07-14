@@ -26,17 +26,20 @@
         <el-table-column prop="returnTime" label="归还时间"  />
         <el-table-column label="状态" >
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0" >申请中/丢失已解决</el-tag>
+            <el-tag v-if="scope.row.status === 0" >申请中</el-tag>
             <el-tag v-if="scope.row.status === 1" type="warning">已通过</el-tag>
-            <el-tag v-if="scope.row.status === 2" type="success">未通过</el-tag>
-            <el-tag v-if="scope.row.status === 3" type="danger" >已归还</el-tag>
-            <el-tag v-if="scope.row.status === 4" type="info">已丢失</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="danger" title="请联系管理员后再次申请">未通过</el-tag>
+            <el-tag v-if="scope.row.status === 3" type="info">使用中</el-tag>
+            <el-tag v-if="scope.row.status === 4" type="danger" >已归还</el-tag>
+            <el-tag v-if="scope.row.status === 5" type="info">已丢失</el-tag>
+            <el-tag v-if="scope.row.status === 6" >丢失已解决</el-tag>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="450">
+        <el-table-column fixed="right" label="操作" width="500">
           <template slot-scope="scope">
             <el-button type="warning" size="small" @click="approve(scope.row)" v-if="hasRole(['admin'])">通过</el-button>
             <el-button type="danger" size="small"  @click="reject(scope.row)" v-if="hasRole(['admin'])">不通过</el-button>
+            <el-button v-if="scope.row.status === 1 ? 'primary' : 'default'" type="primary" size="small" @click="complete(scope.row)" :disabled="scope.row.status !== 1">领用</el-button>
             <el-button type="warning" size="small" @click="returnGoods(scope.row)">归还</el-button>
             <el-button type="success" size="small" @click="lost(scope.row)">丢失</el-button>
             <el-button type="primary" size="small" @click="openEditUI(scope.row.borrowId)" v-if="hasRole(['admin'])">编辑</el-button>
@@ -102,6 +105,7 @@ import infoApi from '@/api/goodsInfo'
 import userApi from '@/api/userManage'
 import { getInfo } from '@/api/user';
 import { mapGetters } from 'vuex'
+import borrow from '@/api/borrow';
   export default {
     data(){
       return {
@@ -154,6 +158,17 @@ import { mapGetters } from 'vuex'
           this.$message.error('操作失败');
           console.error(error);
         });
+      },
+      // 领用物品
+      complete(borrow) {
+            borrowApi.complete(borrow.borrowId).then(response => {
+              this.$message.success('领用物品成功');
+              this.getBorrowList();
+            }).catch(error => {
+              this.$message.error('领用失败');
+              console.error(error);
+            });
+          
       },
       returnGoods(borrow) {
         borrowApi.returnGoods(borrow.borrowId).then(res => {
@@ -274,7 +289,7 @@ import { mapGetters } from 'vuex'
         .then(res => {
             this.users = res.data;
           });
-      }
+      },
 
     },
     created(){

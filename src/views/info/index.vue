@@ -32,23 +32,23 @@
         <el-table-column prop="goodsTypeName" label="物品类型"  />
         <el-table-column prop="goodsDesc" label="物品描述"  width="400"/>
         <el-table-column prop="goodsPrice" label="物品价格"  width="100"/>
-        <el-table-column label="物品状态" width="100">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0" >未申请</el-tag>
-            <el-tag v-if="scope.row.status === 1" type="warning">申请中</el-tag>
+        <!-- <el-table-column label="物品状态" width="100"> -->
+          <!-- <template slot-scope="scope"> -->
+            <!-- <el-tag v-if="scope.row.status === 0" >未申请</el-tag> -->
+            <!-- <el-tag v-if="scope.row.status === 1" type="warning">申请中</el-tag>
             <el-tag v-if="scope.row.status === 2" type="success">已通过</el-tag>
             <el-tag v-if="scope.row.status === 3" type="danger" title="请联系管理员后再次申请">未通过</el-tag>
-            <el-tag v-if="scope.row.status === 4" type="info">使用中</el-tag>
+            <el-tag v-if="scope.row.status === 4" type="info">使用中</el-tag> -->
             <!-- 初始状态为“未申请”，操作栏按钮为“申请”，同一个用户点击“申请”后状态变为“申请中”，按钮仍为“申请”，若用户再次点击“申请”弹窗提示“请勿重复申请！”，管理员通过申请后，状态变为“已通过”，按钮变为“领用”
              用户点击“领用”后，状态变为“使用中”，按钮变为“申请”，若用户点击“申请”弹窗提示“请归还后申请！”，在物品借用管理页面，用户点击“归还”，此页面已经在“使用中”的物品状态变为“未申请”，按钮再次变为“申请”且可用
              如果管理员不通过申请，状态为“未通过”并悬浮提示“请联系管理员询问原因”，按钮仍为“申请”且可用-->
-          </template>
-        </el-table-column>
+          <!-- </template> -->
+        <!-- </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="300">
           <template slot-scope="scope">
             <el-button v-if="scope.row.status === 0" type="success" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button v-if="scope.row.status === 1" type="success" size="small" @click="apply(scope.row)">申请</el-button>
-            <el-button v-if="scope.row.status === 2" type="primary" size="small" @click="complete(scope.row)">领用</el-button>
+            <el-button v-if="scope.row.status === 2" type="success" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button v-if="scope.row.status === 3" type="success" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button v-if="scope.row.status === 4" type="warning" size="small" @click="apply(scope.row)">申请</el-button>
             <el-button type="primary" size="small" @click="openEditUI(scope.row.goodsId)" v-if="hasRole(['admin'])">编辑</el-button>
@@ -253,23 +253,6 @@ import { getInfo } from '@/api/user'
               this.getInfoList();
             }).catch(error => {
               this.$message.error('申请失败');
-              console.error(error);
-            });
-          }).catch(error => {
-            this.$message.error('获取用户信息失败');
-            console.error(error);
-          });
-      },
-      complete(row) {
-        // 假设已经在 Vuex 中存储了 token，可以通过 this.$store.state.user.token 访问
-        const token = this.$store.state.user.token;
-        getInfo(token).then(res => {
-            const userId = res.data.userId;
-            infoApi.complete(row.goodsId, userId).then(response => {
-              this.$message.success('领用物品成功');
-              this.getInfoList();
-            }).catch(error => {
-              this.$message.error('领用失败');
               console.error(error);
             });
           }).catch(error => {

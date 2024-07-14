@@ -22,6 +22,7 @@
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="solve(scope.row)">丢失上报</el-button>
+            <el-button type="danger" size="small" @click="deleteLost(scope.row)" v-if="hasRole(['admin'])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -44,7 +45,7 @@
 
 <script>
 import lostApi from '@/api/lost'
-
+import { mapGetters } from 'vuex'
     export default {
         data(){
             return {
@@ -58,7 +59,13 @@ import lostApi from '@/api/lost'
                 tableData: [],
             }
         },
+        computed: {
+        ...mapGetters(['roles'])
+        },
         methods: {
+            hasRole(requiredRoles) {
+                return requiredRoles.some(role => this.roles.includes(role))
+            },
             solve(lost) {
                 lostApi.solveLost(lost.lostId).then(res => {
                     this.$message.success('物品丢失解决成功');
@@ -89,6 +96,27 @@ import lostApi from '@/api/lost'
                 this.searchModel.username = '';
                 this.searchModel.goodsname = '';
                 this.getLostList();
+            },
+            //删除
+            deleteLost(lost){
+                this.$confirm(`您确认删除这条记录？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                    lostApi.deletelostById(lost.lostId).then(response => {
+                    this.$message({
+                        type: 'success',
+                        message: '记录删除成功'
+                    });
+                    this.getLostList();
+                    });
+                }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                    });
+                });
             },
         },
         created() {

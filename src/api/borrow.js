@@ -57,6 +57,12 @@ export default {
             method: 'put',
         })
     },
+    complete(id) {
+        return request({
+            url: `/borrow/completeBorrow/${id}`,
+            method: 'post',
+        });
+    },
     returnGoods(id) {
         return request({
             url: `/borrow/return/${id}`,
