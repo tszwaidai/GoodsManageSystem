@@ -39,7 +39,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard', breadcrumb: true }
     }]
   },
   {
@@ -70,19 +70,19 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/manage/info',
     name: 'Manage',
-    meta: { title: '物品管理', icon: 'el-icon-s-help', roles: ['admin', 'student'] },
+    meta: { title: '物品管理', icon: 'el-icon-s-help', roles: ['admin', 'student'], breadcrumb: true },
     children: [
       {
         path: 'info',
         name: 'Info',
         component: () => import('@/views/info/index'),
-        meta: { title: '物品信息管理', icon: 'table', roles: ['admin', 'student'] }
+        meta: { title: '物品信息管理', icon: 'table', roles: ['admin', 'student'], breadcrumb: true }
       },
       {
         path: 'type',
         name: 'Type',
         component: () => import('@/views/type/index'),
-        meta: { title: '物品分类管理', icon: 'tree', roles: ['admin', 'student'] }
+        meta: { title: '物品分类管理', icon: 'tree', roles: ['admin', 'student'], breadcrumb: true }
       }
     ]
   },
@@ -95,7 +95,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'Borrow',
         component: () => import('@/views/borrow/index'),
-        meta: { title: '物品借用管理', icon: 'form', roles: ['admin', 'student'] }
+        meta: { title: '物品借用管理', icon: 'form', roles: ['admin', 'student'], breadcrumb: true }
       }
     ]
   },
@@ -107,7 +107,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'Lost',
         component: () => import('@/views/lost/index'),
-        meta: { title: '物品丢失处理', icon: 'link', roles: ['admin'] }
+        meta: { title: '物品丢失处理', icon: 'link', roles: ['admin'], breadcrumb: true }
       }
     ]
   },
@@ -120,7 +120,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'Users',
         component: () => import('@/views/users/index'),
-        meta: { title: '用户管理', icon: 'nested', roles: ['admin'] }
+        meta: { title: '用户管理', icon: 'nested', roles: ['admin'], breadcrumb: true }
       }
     ]
   },
@@ -132,7 +132,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'Center',
         component: () => import('@/views/center/index'),
-        meta: { title: '个人中心', icon: 'nested', roles: ['admin', 'student'] }
+        meta: { title: '个人中心', icon: 'nested', roles: ['admin', 'student'], breadcrumb: true }
       }
     ]
   },

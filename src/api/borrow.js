@@ -78,6 +78,12 @@ export default {
                 userId: userId
             }
         });
+    },
+    getStatusCount() {
+        return request({
+            url: '/borrow/status-count',
+            method: 'get'
+        });
     }
 
 

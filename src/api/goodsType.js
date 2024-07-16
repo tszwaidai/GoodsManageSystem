@@ -43,6 +43,12 @@ export default {
             url: `/goodsType/${id}`,
             method: 'delete',
         })
+    },
+    getTypeCounts() {
+        return request({
+            url: '/goodsType/type-count',
+            method: 'get',
+        })
     }
 
 }
